@@ -1,0 +1,24 @@
+{% extends 'CRAdminBundle::base.admin.html.twig' %}
+
+{% block content %}
+    
+    <div class="inbl w400p">
+        <h2><i class="fa fa-folder-open"></i> {{ listTitle|trans }}</h2>
+    </div>
+
+    {% if actionsList|length > 0 %}
+        <div class="inbl w350p txtright">
+            {% for actionList in actionsList %}
+            <a href="{{path(actionList['route'])}}" class="btn btn-primary">{{ actionList['label'] }}</a>
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if form is not null %}
+        {% form_theme form 'CRAdminBundle:form:fields.html.twig' 'CRTscBundle:form:fields.html.twig' %}
+        {{ form(form) }}
+    {% endif %}
+    
+    {% include ("CRAdminBundle:form:list.html.twig") with list %}
+    
+{% endblock %}

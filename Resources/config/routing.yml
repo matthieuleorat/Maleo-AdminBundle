@@ -1,3 +1,0 @@
-maleo_admin_homepage:
-    path:     /
-    defaults: { _controller: MaleoAdminBundle:Default:index }

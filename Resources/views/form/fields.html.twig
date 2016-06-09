@@ -1,0 +1,178 @@
+{% block form_row %}
+    {% if form.vars.attr['displayChildrenAsMain'] is defined and form.vars.attr['displayChildrenAsMain'] == true %}
+        {{ form_widget(form) }}
+    {% else %}
+        <div class="mbs form-row inbl pbs">
+            {% if attr['display-label'] is not defined or attr['display-label'] == true %}
+            <div class="inbl w150p">
+                {% if errors is not empty %}
+                    {{ form_label(form,null,{'label_attr': {'class': 'error'} }) }}
+                {% else %}
+                    {{ form_label(form) }}
+                {% endif %}
+            </div>
+            {% endif %}
+            <div class="inbl w500p">
+                {{ form_widget(form) }}
+                <div class="symfony-form-errors">
+                    {{ form_errors(form) }}
+                </div>
+            </div>
+        </div>
+    {% endif %}
+{% endblock %}
+
+{# City form field #}
+{% block villetype_widget %}
+    {{ form_widget(form.humanize)}}
+    {{ form_widget(form.id)}}
+{% endblock %}
+
+{%- block textarea_widget -%}
+
+    {% if attr.class is defined %}
+        {% set temp = attr.class %}
+    {% else %}
+        {% set temp = '' %}
+    {% endif %}
+
+    {% if errors is not empty %}
+        {% set temp = temp~' error' %}
+    {% endif %}
+
+    {% set attr = attr|merge({'class': 'formInput '~temp }) %}
+
+    <textarea {{ block('widget_attributes') }}>{{ value }}</textarea>
+{%- endblock textarea_widget -%}
+
+{% block field_widget %}
+    {% set type = type|default('text') %}
+    <input type="{{ type }}" {{ block('widget_attributes') }} value="{{ value }}" />
+{% endblock field_widget %}
+
+{# Default button #}
+{%- block button_widget -%}
+    {%- if label is empty -%}
+        {%- if label_format is not empty -%}
+            {% set label = label_format|replace({
+                '%name%': name,
+                '%id%': id,
+            }) %}
+        {%- else -%}
+            {% set label = name|humanize %}
+        {%- endif -%}
+    {%- endif -%}
+    
+    {% if attr.format is defined and attr.format == 'inline' %}
+        {% spaceless %}
+            <button class="{{form.vars['attr']['class']}}" {{ block('button_attributes') }} type="submit">{{form.vars['label']|raw}}</button>
+        {% endspaceless %}
+    {% else%}
+        <div class="mbm form-row inbl pbs">
+            <div class="inbl w150p">
+
+            </div>
+            <div class="inbl w500p ">
+                {% if attr.class is defined %}
+                {% set temp = attr.class %}
+                {% else %}
+                    {% set temp = '' %}
+                {% endif %}
+                {% set attr = attr|merge({'class': 'fr '~temp }) %}
+                 <button type="{{ type|default('button') }}" {{ block('button_attributes') }}>{{ translation_domain is same as(false) ? label : label|trans({}, translation_domain) }}</button>   
+            </div>
+        </div>
+    {% endif %}
+{%- endblock button_widget -%}
+
+{%- block form_errors -%}
+    {%- if errors|length > 0 -%}
+    <ul>
+        {%- for error in errors -%}
+            <li><i class="fa fa-exclamation-triangle"></i> {{ error.message }}</li>
+        {%- endfor -%}
+    </ul>
+    {%- endif -%}
+{%- endblock form_errors -%}
+
+{%- block choice_widget_expanded -%}
+    <div {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            <p class="mtn">
+                {{- form_widget(child) -}}&nbsp;
+                {{- form_label(child, null, {translation_domain: choice_translation_domain}) -}}
+            </p>
+        {% endfor -%}
+    </div>
+{%- endblock choice_widget_expanded -%}
+
+{%- block choice_widget_collapsed -%}
+    {%- if required and placeholder is none and not placeholder_in_choices and not multiple and (attr.size is not defined or attr.size <= 1) -%}
+        {% set required = false %}
+    {%- endif -%}
+    
+    {% if attr.class is defined %}
+        {% set temp = attr.class %}
+    {% else %}
+        {% set temp = '' %}
+    {% endif %}
+    
+    {% set attr = attr|merge({'class': 'formInput '~temp }) %}
+    
+    <select {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {%- if placeholder is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ placeholder != '' ? (translation_domain is same as(false) ? placeholder : placeholder|trans({}, translation_domain)) }}</option>
+        {%- endif -%}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('choice_widget_options') -}}
+            {%- if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif -%}
+        {%- endif -%}
+        {%- set options = choices -%}
+        {{- block('choice_widget_options') -}}
+    </select>
+{%- endblock choice_widget_collapsed -%}
+
+{% block _confirmation_confirmationOui_widget %}
+    {% spaceless %}
+        <button class="{{form.vars['attr']['class']}}" {{ block('button_attributes') }} type="submit">{{ (translation_domain is same as(false) ? label : label|trans({}, translation_domain))|raw }}</button>
+    {% endspaceless %}
+{% endblock %}
+
+{% block _confirmation_confirmationNon_widget %}
+    {% spaceless %}
+        <button class="{{form.vars['attr']['class']}}" {{ block('button_attributes') }} type="submit">{{ (translation_domain is same as(false) ? label : label|trans({}, translation_domain))|raw }}</button>
+    {% endspaceless %}
+{% endblock %}
+
+{%- block widget_attributes -%}
+    id="{{ id }}" name="{{ full_name }}"
+    {%- if read_only %} readonly="readonly"{% endif -%}
+    {%- if disabled %} disabled="disabled"{% endif -%}
+    {%- if required %} required="required"{% endif -%}
+
+    {% if attr.class is defined %}
+        {% set temp = attr.class %}
+    {% else %}
+        {% set temp = '' %}
+    {% endif %}
+
+    {% if errors is not empty %}
+        {% set temp = temp~' error' %}
+    {% endif %}
+
+    {% set attr = attr|merge({'class': 'formInput '~temp }) %}
+
+    {%- for attrname, attrvalue in attr if 'readonly' != attrname or not read_only -%}
+        {{- " " -}}
+        {%- if attrname in ['placeholder', 'title'] -%}
+            {{- attrname }}="{{ translation_domain is same as(false) ? attrvalue : attrvalue|trans({}, translation_domain) }}"
+        {%- elseif attrvalue is same as(true) -%}
+            {{- attrname }}="{{ attrname }}"
+        {%- elseif attrvalue is not same as(false) -%}
+            {{- attrname }}="{{ attrvalue }}"
+        {%- endif -%}
+    {%- endfor -%}
+{%- endblock widget_attributes -%}

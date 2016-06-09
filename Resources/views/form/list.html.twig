@@ -1,0 +1,119 @@
+{% import "CRAdminBundle:macro/list:macro.html.twig" as macro %}
+
+{# 
+    List Template
+
+    Parameters:
+        Full example:
+            'parameters': {
+                'actionsDisplay': 'inline',
+                'translationDomain' : AcmeBundle
+            },
+
+        Definitions:
+            actionDisplay       : Optional  : If set to inline, action list will be displayed in a dropdown list
+            translationDomain   : Optional  : A domain translation can be given, default is app
+    
+    Fields:
+        Full example:
+            'fields': [
+                {
+                    'field'     : Mandatory : 'status',
+                    'template'  : Optional  : 'AcmeBundle:Path:customTemplate.html.twig'. If empty, will render object.field
+                    'label'     : Optional  : The column label. If empty, the field name will be use as label
+                },
+            ],
+
+        Definitions:
+            field       : entity field to display
+            template    : A custom template can be use
+            label       : Column
+
+    Actions: 
+        Full example :
+            'actions': {
+                'edit': {
+                    'route'      : 'cr_admin_annonces_edit',
+                    'label'      : 'Modifier',
+                    'routeParam' : {'id':'id'},
+                    'icon'       : '<i class="fa fa-pencil"></i>',
+                    'attr'       : {'class' : 'btn btn-default'},
+                    'template'   : 'AcmeBundle:Path:customTemplate.html.twig'
+                },
+            },
+        
+        Définitions
+            route       : The route for the action
+            label       : The text that will be displayed and clickable
+            routeParam  : Array of parameters of the route. {'paramName' : 'attribute '}
+            icon        : A font icon could be display before the action label. Any html tag could be give, |raw filter is applied 
+            attr        : Array of attribute that will be set on the action link
+            template    : A custom template can be use
+#}
+
+{% set translationDomain = 'app' %}
+{% if parameters.translationDomain is defined %}
+    {% set translationDomain = parameters.translationDomain %}
+{% endif %}
+
+<table>
+    <thead>
+        <tr>
+            {% for entityAttibute, conf in fields %}
+                <th>
+                    {% if conf.label is defined %}
+                        {{ knp_pagination_sortable(records, conf.label|trans({}, translationDomain), 'a.'~entityAttibute) }}
+                    {% else %}
+                        {{ knp_pagination_sortable(records, conf.field|trans({}, translationDomain), 'a.'~entityAttibute) }}
+                    {% endif %}
+                </th>
+            {% endfor %}
+            <th>{{'Actions'|trans({}, translationDomain)}}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for record in records %}
+            <tr>
+                {% for entityAttibute, conf in fields %}
+                    <td>
+                        {% if conf.template is defined %}
+                            {% include conf.template %}
+                        {% else %}
+                            {% if isDateTime(attribute(record, entityAttibute)) %}
+                                {{ attribute(record, entityAttibute)|date('d/m/Y') }}
+                            {% else %}
+                                {{ attribute(record, entityAttibute) }}
+                            {% endif %}
+                        {% endif %}
+                    </td>
+                {% endfor %}
+                <td>
+                    {% if parameters is defined and parameters.actionsDisplay is defined and parameters.actionsDisplay == 'dropdown' %}
+                        <div class="dropdown">
+                            <span>{{'actions'|trans({}, translationDomain)}} <i class="fa fa-caret-down"></i></span>
+                            <div class="dropdown-content">
+                                <ul>
+                                    {% for key, action in actions %}
+                                        {% set act = macro.renderAction(record, key, action, translationDomain) %}
+                                        
+                                        {% if act is not empty %}
+                                            <li>{{ act }}</li>
+                                        {% endif %}
+                                    {% endfor %}
+                                </ul>
+                            <div>
+                        </div>
+                    {% else%}
+                        {% for key, action in actions %}
+                            {{ macro.renderAction(record, key, action, translationDomain) }}
+                        {% endfor %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="navigation">
+    {{ knp_pagination_render(records) }}
+</div>

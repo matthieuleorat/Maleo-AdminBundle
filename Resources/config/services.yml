@@ -1,4 +1,6 @@
 services:
-#    maleo_admin.example:
-#        class: Maleo\AdminBundle\Example
-#        arguments: ["@service_id", "plain_value", %parameter%]
+    cr_admin.twig_extension:
+        class: CR\AdminBundle\Twig\AdminExtension
+        public: false
+        tags:
+            - { name: twig.extension }

@@ -1,0 +1,38 @@
+{% macro renderAction(record, key, action, translationDomain) %}{% spaceless %}
+    
+    {# Generate the url #}
+    {% set parameters = {} %}
+    {% for paramName, paramValue in action.routeParam %}
+        {% set parameters = parameters|merge({(paramName) : attribute(record, paramValue)}) %}
+    {% endfor %}
+    {% set url = path(action.route, parameters) %}
+
+    {# Set the label #}
+    {% if action.label is defined %}
+        {% set label = action.label|trans({}, translationDomain) %}
+    {% else %}
+        {% set label = key|trans({}, translationDomain) %}
+    {% endif %}
+
+    {# Set icon #}
+    {% if action.icon is defined %}
+        {% set icon = action.icon %}
+    {% else %}
+        {% set icon = '' %}
+    {% endif %}
+
+    {# Set the label #}
+    {% if action.attr is defined %}
+        {% set attr = action.attr %}
+    {% else %}
+        {% set attr = {'class' : ''} %}
+    {% endif %}
+    
+    {# Include the right template #}
+    {% if action.template is defined %}
+        {% include action.template %}
+    {% else %}
+        {% include "CRAdminBundle:actions:defaultAction.html.twig" %} 
+    {% endif %}
+    
+{% endspaceless %}{% endmacro %}
