@@ -21,7 +21,6 @@
       }
     },
     "target-dir" : "Maleo/AdminBundle",
-
     "extra" : {
         "branch-alias" : {
           "dev-master" : "~0.1"
