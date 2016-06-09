@@ -1,6 +1,6 @@
 {
-    "name" : "Maleo/AdminBundle",
-    "description" : "A admin bunle",
+    "name" : "maleo/admin-bundle",
+    "description" : "An admin bunle",
     "type" : "symfony-bundle",
     "authors" : [{
         "name" : "Matthieu Léorat",
@@ -21,8 +21,7 @@
       }
     },
     "target-dir" : "Maleo/AdminBundle",
-    "repositories" : [{
-    }],
+
     "extra" : {
         "branch-alias" : {
           "dev-master" : "~0.1"
