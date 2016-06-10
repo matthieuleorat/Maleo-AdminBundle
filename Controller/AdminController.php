@@ -44,7 +44,7 @@ class AdminController extends Controller
     private $defaultSortList = ['defaultSortFieldName' => 'a.dateUpdate', 'defaultSortDirection' => 'desc'];
 
     protected $entity;
-    protected $templatePath = 'CRAdminBundle::';
+    protected $templatePath = 'MaleoAdminBundle::';
     protected $page;
     protected $request;
 

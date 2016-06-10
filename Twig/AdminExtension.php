@@ -1,6 +1,6 @@
 <?php
 
-namespace CR\AdminBundle\Twig;
+namespace Maleo\AdminBundle\Twig;
 
 class AdminExtension extends \Twig_Extension
 {

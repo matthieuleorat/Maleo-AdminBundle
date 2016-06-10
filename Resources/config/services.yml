@@ -1,6 +1,6 @@
 services:
-    cr_admin.twig_extension:
-        class: CR\AdminBundle\Twig\AdminExtension
+    maleo_admin_bundle.twig_extension:
+        class: Maleo\AdminBundle\Twig\AdminExtension
         public: false
         tags:
             - { name: twig.extension }
